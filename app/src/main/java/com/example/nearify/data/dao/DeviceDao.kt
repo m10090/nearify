@@ -11,7 +11,7 @@ import com.example.nearify.data.model.DeviceWithAction
 @Dao
 interface DeviceDao {
 
-    @Query("INSERT INTO device (bluetooth_mac, name, in_range) VALUES (:bluetoothMac,:name, :in_range)")
+    @Insert
     fun insert(device: Device)
 
     @get:Query("SELECT * FROM device")

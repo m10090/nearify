@@ -20,10 +20,10 @@ interface ActionDao {
     @Query(
         """
         SELECT * FROM `action`
-        WHERE device_id = :deviceId AND action_type = :onLeave
+        WHERE device_id = :deviceId
         """
     )
-    fun getActions(deviceId: Int, onLeave: Boolean): List<Action>
+    fun getActions(deviceId: Int): List<Action>
 
     @Delete
     fun deleteAction(action: Action)
@@ -32,10 +32,11 @@ interface ActionDao {
     @Query(
         """
         DELETE FROM `action`
-        where device_id = :deviceId AND action_type = :onLeave
+        where device_id = :deviceId
     """
     )
-    fun deleteActions(deviceId: Int, onLeave: Boolean)
+    fun deleteActions(deviceId: String)
+
 
 
     @Query("DELETE FROM `action` where device_id = :deviceId")

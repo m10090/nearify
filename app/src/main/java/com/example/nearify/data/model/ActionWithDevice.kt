@@ -7,14 +7,14 @@ data class ActionWithDevice(
     @Embedded val action: Action,
     @Relation(
         parentColumn = "device_id",
-        entityColumn = "id"
+        entityColumn = "bluetooth_mac"
     )
     val device: Device
 )
 data class DeviceWithAction (
     @Embedded val device: Device,
     @Relation(
-        parentColumn = "id",
+        parentColumn = "bluetooth_mac",
         entityColumn = "device_id"
     )
     val actions: List<Action>

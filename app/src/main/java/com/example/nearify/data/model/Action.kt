@@ -19,7 +19,8 @@ import java.time.LocalDateTime
 data class Action(
     @PrimaryKey(autoGenerate = true) val actionId: Int = 0,
     @ColumnInfo(name = "device_id", index = true) val deviceId: Int,
-    @ColumnInfo(name = "action_type") val onLeave: Boolean,
+    @ColumnInfo(name = "action_leave") val onLeave: Boolean = false,
+    @ColumnInfo(name = "action_sight") val onSight: Boolean = false,
     @ColumnInfo(name = "message") val message: String = "",
     @Embedded val device: Device? = null,
 ) {

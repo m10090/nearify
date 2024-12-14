@@ -34,9 +34,6 @@ class MainActivity : ComponentActivity() {
             db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "nearify-db")
                 .build()
 
-            db.deviceDao().insert(Device(name = "test", wifiMac = "test"))
-            val k: List<Device> = db.deviceDao().getAllDevice
-            db.actionDao().addAction(Action(deviceId = k[0].id, message = "test", onLeave = true))
         }
         setContent {
             NearifyTheme {

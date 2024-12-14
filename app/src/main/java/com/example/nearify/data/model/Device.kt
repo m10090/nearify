@@ -6,14 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "device")
 data class Device(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey @ColumnInfo(name="bluetooth_mac") val bluetoothMac: String,
     val name: String,
-    @ColumnInfo(name = "wifi_mac") val wifiMac: String? = null,
-    @ColumnInfo(name = "bluetooth_mac") val bluetoothMac: String? = null
-) {
-    init {
-        require(wifiMac != null || bluetoothMac != null) {
-            "Device must have a MAC address."
-        }
-    }
-}
+    @ColumnInfo(name = "in_range") val inRange: Boolean = true,
+)

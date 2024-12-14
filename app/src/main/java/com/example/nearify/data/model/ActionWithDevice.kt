@@ -11,3 +11,11 @@ data class ActionWithDevice(
     )
     val device: Device
 )
+data class DeviceWithAction (
+    @Embedded val device: Device,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "device_id"
+    )
+    val actions: List<Action>
+)

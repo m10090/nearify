@@ -39,11 +39,18 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:stretchColumns="1"
         android:scrollbarAlwaysDrawHorizontalTrack="true"
         app:layout_constraintBaseline_toBottomOf="parent"
         android:visibility="gone"
         android:id="@+id/notification_table"
         >
+        <TableRow style="">
+            <TextView>
+
+            </TextView>
+        </TableRow>
+
 
     </TableLayout>
 

@@ -13,7 +13,7 @@
         android:theme="@style/Theme.Nearify"
         tools:targetApi="31">
         <activity
-            android:name=".findDevices"
+            android:name=".addDevices"
             android:exported="false" />
         <activity
             android:name=".ActionNotification"

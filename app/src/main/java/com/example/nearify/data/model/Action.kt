@@ -17,12 +17,11 @@ import java.time.LocalDateTime
     )],
 )
 data class Action(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val actionId: Int = 0,
     @ColumnInfo(name = "device_id", index = true) val deviceId: Int,
     @ColumnInfo(name = "action_type") val onLeave: Boolean,
-    @ColumnInfo(name = "until_datetime") val untilDatetime: LocalDateTime = LocalDateTime.MAX,
     @ColumnInfo(name = "message") val message: String = "",
-    @Embedded val device: Device
+    @Embedded val device: Device? = null,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -30,10 +29,9 @@ data class Action(
 
         other as Action
 
-        if (id != other.id) return false
+        if (actionId != other.actionId) return false
         if (deviceId != other.deviceId) return false
         if (onLeave != other.onLeave) return false
-        if (untilDatetime != other.untilDatetime) return false
         if (message != other.message) return false
         if (device != other.device) return false
 
@@ -41,10 +39,9 @@ data class Action(
     }
 
     override fun hashCode(): Int {
-        var result = id
+        var result = actionId
         result = 31 * result + deviceId
         result = 31 * result + onLeave.hashCode()
-        result = 31 * result + untilDatetime.hashCode()
         result = 31 * result + message.hashCode()
         result = 31 * result + device.hashCode()
         return result

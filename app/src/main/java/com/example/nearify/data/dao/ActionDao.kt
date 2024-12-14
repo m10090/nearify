@@ -13,18 +13,15 @@ interface ActionDao {
     @Insert
     fun addAction(action: Action)
 
-    @get:Query("SELECT * FROM action where until_datetime < :now")
-    val getAllActions: List<Action>
+    @get:Query("SELECT * FROM `action`")
+    val getAllActions: List<ActionWithDevice>
 
-    // delete action
-    @Query("DELETE FROM action WHERE id = :id")
-    fun deleteAction(actionId: Int)
 
     @Query(
         """
-        SELECT * FROM action 
+        SELECT * FROM `action`
         WHERE device_id = :deviceId AND action_type = :onLeave
-        AND until_datetime < :now"""
+        """
     )
     fun getActions(deviceId: Int, onLeave: Boolean): List<Action>
 
@@ -34,14 +31,14 @@ interface ActionDao {
 
     @Query(
         """
-        DELETE FROM action 
+        DELETE FROM `action`
         where device_id = :deviceId AND action_type = :onLeave
     """
     )
     fun deleteActions(deviceId: Int, onLeave: Boolean)
 
 
-    @Query("DELETE FROM action where device_id = :deviceId")
+    @Query("DELETE FROM `action` where device_id = :deviceId")
     fun deleteActions(deviceId: Int)
 
     @Delete
@@ -51,6 +48,6 @@ interface ActionDao {
     fun updateAction(action: Action)
 
     @Update
-    fun updateActions(vararg actions: Action)
+    fun updateActions(vararg `actions`: Action)
 
 }

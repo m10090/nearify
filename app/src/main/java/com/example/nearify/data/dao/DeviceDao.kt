@@ -16,6 +16,7 @@ interface DeviceDao {
 
     @Query("Delete from device where id = :id")
     fun deleteDevice(id: Int)
-
+    @Query("SELECT name from device where id = :id")
+    fun getDevice(id:Int):List<String>
 
 }

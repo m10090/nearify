@@ -51,6 +51,17 @@ class MainActivity : ComponentActivity() {
             Greeting(name = "Android")
             Spacer(modifier = Modifier)
             GoToNotification()
+            Spacer(modifier = Modifier)
+            GoToAddDevice()
+        }
+    }
+    @Composable
+    fun GoToAddDevice() {
+        Button(onClick = {
+            val intent = Intent(this, AddDevice::class.java)
+            startActivity(intent)
+        }) {
+            Text(text = "Go To Device")
         }
     }
 

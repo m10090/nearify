@@ -1,50 +1,50 @@
-package com.example.nearify
+package com.example.nearify.ui.view
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import androidx.compose.ui.platform.ComposeView
 import android.os.Bundle
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.nearify.ui.view.composables.DeviceCard
+import com.example.nearify.R
 import com.example.nearify.data.model.Device
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.concurrent.atomic.AtomicReferenceArray
 
-class AddDevice : AppCompatActivity() {
-    val devices: MutableList<Device> = mutableListOf()
-    fun addDevice(device: Device){
-        devices.add(device)
+class DeviceList : AppCompatActivity() {
+    private val devices: MutableSet<Device> = mutableSetOf()
+    private val bluetoothAdapter: BluetoothAdapter? by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        bluetoothManager.adapter
     }
+    private lateinit var listview: LinearLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_add_device)
+        setContentView(R.layout.activity_device_list)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
 
         if (bluetoothAdapter == null) {
             // Device does not support Bluetooth
             return
         }
+        val bluetoothAdapter = bluetoothAdapter!!
         if (!bluetoothAdapter.isEnabled) {
             // Bluetooth is not enabled, prompt user to enable it
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
@@ -78,10 +78,9 @@ class AddDevice : AppCompatActivity() {
             bluetoothAdapter.cancelDiscovery()
         }
 
-        bluetoothAdapter.startDiscovery()
+        listview = findViewById(R.id.bluetooth_list)
 
-        val listview = findViewById<ListView>(R.id.bluetooth_list)
-        GlobalScope.launch(Dispatchers.IO){
+
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -93,7 +92,7 @@ class AddDevice : AppCompatActivity() {
                         return
                     }
                     val deviceName = if (ActivityCompat.checkSelfPermission(
-                            this@AddDevice,
+                            this@DeviceList,
                             Manifest.permission.BLUETOOTH_CONNECT
                         ) != PackageManager.PERMISSION_GRANTED
                     ) {
@@ -106,12 +105,16 @@ class AddDevice : AppCompatActivity() {
                         // for ActivityCompat#requestPermissions for more details.
                         "UnKnown"
                     } else
-                        device.name?: "UnKnown"
+                        device.name ?: return
                     val deviceAddress = device.address
                     // add item to device name to listview
-                    devices.add(Device(deviceAddress, deviceName))
-
-
+                    val deviceObj = Device(deviceAddress, deviceName)
+                    devices.add(deviceObj)
+                    listview.addView(ComposeView(this@DeviceList).apply {
+                        setContent {
+                            DeviceCard(deviceObj)
+                        }
+                    })
                 }
             }
         }
@@ -120,5 +123,5 @@ class AddDevice : AppCompatActivity() {
         bluetoothAdapter.startDiscovery()
     }
 
-    }
+
 }

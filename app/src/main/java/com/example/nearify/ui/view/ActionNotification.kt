@@ -1,4 +1,4 @@
-package com.example.nearify
+package com.example.nearify.ui.view
 
 import android.os.Bundle
 import android.widget.Button
@@ -7,16 +7,14 @@ import android.widget.TableRow
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.children
-import androidx.core.view.marginLeft
+import com.example.nearify.MainActivity
+import com.example.nearify.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.concurrent.thread
 
 class ActionNotification : AppCompatActivity() {
     val db = MainActivity.db

@@ -15,9 +15,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.room.Room
 import com.example.nearify.data.local.AppDatabase
-import com.example.nearify.data.model.Action
-import com.example.nearify.data.model.Device
 import com.example.nearify.ui.theme.NearifyTheme
+import com.example.nearify.ui.view.ActionNotification
+import com.example.nearify.ui.view.DeviceList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun GoToAddDevice() {
         Button(onClick = {
-            val intent = Intent(this, AddDevice::class.java)
+            val intent = Intent(this, DeviceList::class.java)
             startActivity(intent)
         }) {
             Text(text = "Go To Device")

@@ -36,7 +36,8 @@ class ActionNotification : AppCompatActivity() {
 
         GlobalScope.launch(Dispatchers.IO) {
             val notifications = db.actionDao().getAllActions
-            withContext(Dispatchers.Main) {
+
+               runOnUiThread() {
                 val context = this@ActionNotification
                 if (notifications.isNotEmpty()) {
                     notifications.forEach { x ->
@@ -44,6 +45,7 @@ class ActionNotification : AppCompatActivity() {
                         val device = x.device
                         // create row
                         val row = TableRow(context).apply {
+                            val view = this@apply
                             layoutParams = TableRow.LayoutParams(
                                 TableRow.LayoutParams.MATCH_PARENT,
                                 TableRow.LayoutParams.WRAP_CONTENT
@@ -67,7 +69,7 @@ class ActionNotification : AppCompatActivity() {
                                     val removeButton = "Remove"
                                     text = removeButton
                                     setOnClickListener {
-                                        table.removeView(this@apply)
+                                        table.removeView(view)
                                         GlobalScope.launch(Dispatchers.IO) {
                                             db.actionDao().deleteAction(action)
                                         }

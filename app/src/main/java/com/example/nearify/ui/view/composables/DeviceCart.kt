@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.nearify.data.model.Device
-import com.example.nearify.ui.view.ActionNotification
 import com.example.nearify.ui.view.AddDevice
 
 /**
@@ -51,8 +50,10 @@ fun DeviceCard(deviceModel: Device) {
                     )
                     Button(onClick = {
                         val intent = Intent(context, AddDevice::class.java)
+                        intent.putExtra("device", deviceModel)
                         context.startActivity(intent)
                     }) {
+                        Text(text = "Add")
                     }
                 }
             }

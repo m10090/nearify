@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<com.google.android.flexbox.FlexboxLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,17 +7,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.view.ActionNotification"
+    app:flexDirection="column"
     >
 
     <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:justifyContent="center"
         >
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingRight="10dp"
             android:paddingLeft="10dp"
             android:paddingVertical="2dp"
@@ -25,7 +26,7 @@
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingRight="10dp"
             android:paddingLeft="10dp"
             android:paddingVertical="2dp"
@@ -41,16 +42,20 @@
         android:layout_height="wrap_content"
         android:stretchColumns="1"
         android:scrollbarAlwaysDrawHorizontalTrack="true"
-        app:layout_constraintBaseline_toBottomOf="parent"
         android:visibility="gone"
         android:id="@+id/notification_table"
         >
-        <TableRow style="">
-            <TextView>
-
-            </TextView>
+        <TableRow>
+            <TextView
+                android:text="Message"/>
+            <TextView
+                android:text="Where"/>
+            <TextView
+                android:text="Device name"/>
+            <TextView
+                android:text="Remove"/>
         </TableRow>
 
     </TableLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.flexbox.FlexboxLayout>

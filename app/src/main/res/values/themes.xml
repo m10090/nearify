@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Nearify" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Nearify" parent="android:Theme.Material.Light.NoActionBar" >
+        <!-- set the color of the text to white -->
+        <item name="android:textColorPrimary">@color/white</item>
+    </style>
+    <!-- Base application theme. -->
+
+    <style name="Base.Theme.Nearify" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
 </resources>

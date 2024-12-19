@@ -20,6 +20,7 @@
         android:padding="16dp" />
 
     <Button
+        android:theme="@style/ShapeAppearanceOverlay.Material3.Button"
         android:id="@+id/btnDeleteDevice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

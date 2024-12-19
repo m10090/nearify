@@ -10,8 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nearify.R
 import com.example.nearify.data.model.savedDevice
 
+
 class DeviceAdapter(
-    private val devices: List<savedDevice>,
+    private val devices: MutableList<savedDevice>,
     private val onDeleteClick: (savedDevice) -> Unit
 ) : RecyclerView.Adapter<DeviceAdapter.DeviceViewHolder>() {
 
@@ -22,7 +23,7 @@ class DeviceAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_device, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.one_device, parent, false)
         return DeviceViewHolder(view)
     }
 
@@ -34,4 +35,8 @@ class DeviceAdapter(
     }
 
     override fun getItemCount(): Int = devices.size
+
+    fun addDevice( dev : savedDevice){
+        devices.add(dev)
+    }
 }

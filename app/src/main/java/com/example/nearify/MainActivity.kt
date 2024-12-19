@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.room.Room
 import com.example.nearify.data.local.AppDatabase
 import com.example.nearify.data.model.Device
@@ -75,9 +76,20 @@ fun MainScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
+@Preview
+fun previewMainScreen(){
+    NearifyTheme {
+        Scaffold(modifier = Modifier.fillMaxSize())
+        { innerPadding ->
+            MainScreen(modifier = Modifier.padding(innerPadding))
+        }
+    }
+}
+
+@Composable
 fun GoToAddDevicesList() {
     val context = LocalContext.current
-    Button(onClick = {
+    Button(modifier = Modifier.padding(20.dp).fillMaxWidth()  , onClick = {
         val intent = Intent(context, AddDeviceList::class.java)
         context.startActivity(intent)
     }) {
@@ -88,7 +100,7 @@ fun GoToAddDevicesList() {
 @Composable
 fun GoToNotification() {
     val context = LocalContext.current
-    Button(onClick = {
+    Button(modifier = Modifier.padding(20.dp).fillMaxWidth()  ,onClick = {
         val intent = Intent(context, ActionNotification::class.java)
         context.startActivity(intent)
     }) {
@@ -99,7 +111,7 @@ fun GoToNotification() {
 @Composable
 fun GoToSavedDevicesList() {
     val context = LocalContext.current
-    Button(onClick = {
+    Button(modifier = Modifier.padding(20.dp).fillMaxWidth()  ,onClick = {
         val intent = Intent(context, SavedDevicesActivity::class.java)
         context.startActivity(intent)
     }) {

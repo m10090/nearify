@@ -2,6 +2,7 @@ package com.example.nearify
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -17,9 +18,11 @@ import com.example.nearify.data.model.Device
 import com.example.nearify.ui.theme.NearifyTheme
 import com.example.nearify.ui.view.ActionNotification
 import com.example.nearify.ui.view.AddDeviceList
+import com.example.nearify.ui.view.SavedDevicesActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+
 
 
 
@@ -32,6 +35,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_saved_devices)
+
+
+
         enableEdgeToEdge()
         GlobalScope.launch(Dispatchers.IO) {
 
@@ -51,6 +58,13 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+        val btnViewSavedDevices: Button = findViewById(R.id.btnSavedDevices)
+        btnViewSavedDevices.setOnClickListener {
+            val intent = Intent(this, SavedDevicesActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
 }

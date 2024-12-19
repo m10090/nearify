@@ -31,6 +31,9 @@ import androidx.compose.ui.unit.dp
 import com.example.nearify.data.model.Action
 import com.example.nearify.data.model.Device
 import com.example.nearify.db
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 private var device = Device("AA:BB:CC:DD:EE:DD", "Cgmoreda")
@@ -110,21 +113,25 @@ private fun MainScreen(
             )
         }
         Button(onClick = {
-            if (!(enteredOnLeave || enteredOnSight)) {
-                Toast.makeText(
-                    context,
-                    "Please select at least one option (on sight or on leave)",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            db.actionDao().addAction(
-                Action(
-                    message = enteredMessage,
-                    onLeave = enteredOnLeave,
-                    onSight = enteredOnSight,
-                    macAddress = device.bluetoothMac
+
+            GlobalScope.launch(Dispatchers.IO) {
+                if (!(enteredOnLeave || enteredOnSight)) {
+                    Toast.makeText(
+                        context,
+                        "Please select at least one option (on sight or on leave)",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                db.actionDao().addAction(
+                    Action(
+                        message = enteredMessage,
+                        onLeave = enteredOnLeave,
+                        onSight = enteredOnSight,
+                        macAddress = device.bluetoothMac
+                    )
                 )
-            )
+            }
+
             finish()
         }) {
             Text("Add Notification")

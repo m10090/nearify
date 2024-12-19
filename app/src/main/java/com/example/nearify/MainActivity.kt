@@ -11,35 +11,37 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import androidx.room.Room
 import com.example.nearify.data.local.AppDatabase
 import com.example.nearify.data.model.Device
 import com.example.nearify.ui.theme.NearifyTheme
 import com.example.nearify.ui.view.ActionNotification
-import com.example.nearify.ui.view.DeviceList
+import com.example.nearify.ui.view.AddDeviceList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+
+
+val db : AppDatabase by lazy {
+    _db_intial
+}
+lateinit var _db_intial: AppDatabase
+
 class MainActivity : ComponentActivity() {
-    companion object {
-        lateinit var db: AppDatabase
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         GlobalScope.launch(Dispatchers.IO) {
 
-            db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "nearify-db")
+            _db_intial = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "nearify-db")
                 .build()
 
-            if (db.deviceDao().getAllDevice.isEmpty()) {
-                db.deviceDao().insert(Device("AA:BB:CC:DD:EE:DD", "Cgmoreda"))
+            if (db.deviceDao().getAllDevices.isEmpty()) {
+                db.deviceDao().insert(Device("AA:BB:CC:DD:EE:FF", "Cgmoreda"))
             }
+
         }
         setContent {
             NearifyTheme {
@@ -67,7 +69,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
 fun GoToAddDevicesList() {
     val context = LocalContext.current
     Button(onClick = {
-        val intent = Intent(context, DeviceList::class.java)
+        val intent = Intent(context, AddDeviceList::class.java)
         context.startActivity(intent)
     }) {
         Text(text = "Go To Device")
@@ -86,10 +88,5 @@ fun GoToNotification() {
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    NearifyTheme {
 
-    }
-}
+

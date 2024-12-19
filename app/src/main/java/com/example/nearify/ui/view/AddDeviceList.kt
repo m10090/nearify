@@ -21,8 +21,12 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.nearify.ui.view.composables.DeviceCard
 import com.example.nearify.R
 import com.example.nearify.data.model.Device
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class DeviceList : AppCompatActivity() {
+class AddDeviceList : AppCompatActivity() {
     private val devices: MutableSet<Device> = mutableSetOf()
     private val bluetoothAdapter: BluetoothAdapter? by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -33,6 +37,7 @@ class DeviceList : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContentView(R.layout.activity_device_list)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -86,13 +91,12 @@ class DeviceList : AppCompatActivity() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val action = intent?.action
                 if (BluetoothDevice.ACTION_FOUND == action) {
-                    val device: BluetoothDevice? =
-                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-                    if (device == null) {
-                        return
-                    }
+
+                    val device: BluetoothDevice =
+                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE) ?: return
+
                     val deviceName = if (ActivityCompat.checkSelfPermission(
-                            this@DeviceList,
+                            this@AddDeviceList,
                             Manifest.permission.BLUETOOTH_CONNECT
                         ) != PackageManager.PERMISSION_GRANTED
                     ) {
@@ -109,17 +113,19 @@ class DeviceList : AppCompatActivity() {
                     val deviceAddress = device.address
                     // add item to device name to listview
                     val deviceObj = Device(deviceAddress, deviceName)
-                    devices.add(deviceObj)
-                    listview.addView(ComposeView(this@DeviceList).apply {
-                        setContent {
-                            DeviceCard(deviceObj)
-                        }
-                    })
+                    GlobalScope.launch(Dispatchers.Main) {
+                        devices.add(deviceObj)
+                        listview.addView(ComposeView(this@AddDeviceList).apply {
+                            setContent {
+                                DeviceCard(deviceObj)
+                            }
+                        })
+                    }
                 }
             }
         }
-        registerReceiver(receiver, filter)
 
+        registerReceiver(receiver, filter)
         bluetoothAdapter.startDiscovery()
     }
 

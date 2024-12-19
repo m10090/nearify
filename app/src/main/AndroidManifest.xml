@@ -25,6 +25,9 @@
         android:theme="@style/Theme.Nearify"
         tools:targetApi="31">
         <activity
+            android:name=".ui.view.AddedDevicesList"
+            android:exported="false" />
+        <activity
             android:name=".ui.view.AddNotification"
             android:exported="false" />
         <activity
@@ -38,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.view.DeviceList"
+            android:name=".ui.view.AddDeviceList"
             android:exported="false"
             android:theme="@style/Theme.AppCompat" />
         <activity

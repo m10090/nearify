@@ -25,16 +25,15 @@ import com.example.nearify.MainActivity
 import com.example.nearify.data.local.AppDatabase
 import com.example.nearify.data.model.Device
 import com.example.nearify.ui.theme.NearifyTheme
+import com.example.nearify.db
 
 
 private var device = Device("AA:BB:CC:DD:EE:DD", "Cgmoreda")
-private lateinit var  db:AppDatabase
 
 class AddDevice : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        db = MainActivity.db
 
 //        val modifier = Modifier.padding(vertical = 16.dp, horizontal = 16.dp)
         @Suppress("DEPRECATION")

@@ -10,11 +10,7 @@ import androidx.compose.ui.unit.dp
 import com.example.nearify.data.model.Device
 import com.example.nearify.ui.view.AddDevice
 
-/**
- * Composable function for rendering a device card.
- *
- * @param deviceModel The device model representing the device.
- */
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DeviceCard(deviceModel: Device) {
@@ -32,8 +28,8 @@ fun DeviceCard(deviceModel: Device) {
         Row(
             modifier = Modifier.padding(8.dp)
         ) {
-            Column() {
-                Row() {
+            Column {
+                Row {
                     Text(
                         text = deviceModel.name,
                         style = MaterialTheme.typography.titleSmall,

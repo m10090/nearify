@@ -30,15 +30,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.nearify.data.model.Action
 import com.example.nearify.data.model.Device
+import com.example.nearify.db
 
 
-private lateinit var db: AppDatabase
 private var device = Device("AA:BB:CC:DD:EE:DD", "Cgmoreda")
 
 class AddNotification : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        db = MainActivity.db
         @Suppress("DEPRECATION")
         device = intent.getParcelableExtra("device") ?: device
         setContent {
@@ -59,8 +58,8 @@ private fun MainScreen(
     modifier: Modifier,
     finish: () -> Unit /* so bad don't to this at home */ = {}
 ) {
-    var enteredMessage by remember { mutableStateOf("Text") }
 
+    var enteredMessage by remember { mutableStateOf("Text") }
     var enteredOnLeave by remember { mutableStateOf(false) }
     var enteredOnSight by remember { mutableStateOf(false) }
 
@@ -84,7 +83,9 @@ private fun MainScreen(
 
         )
         spacer()
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text("on leave", color = MaterialTheme.colorScheme.primary)
             Checkbox(
                 checked = enteredOnLeave,
@@ -109,10 +110,10 @@ private fun MainScreen(
             )
         }
         Button(onClick = {
-            if (enteredOnLeave || enteredOnSight == false) {
+            if (!(enteredOnLeave || enteredOnSight)) {
                 Toast.makeText(
                     context,
-                    "Please select at least one option (on sight or on leave) ",
+                    "Please select at least one option (on sight or on leave)",
                     Toast.LENGTH_SHORT
                 ).show()
             }

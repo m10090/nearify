@@ -1,6 +1,7 @@
 package com.example.nearify.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -15,10 +16,14 @@ interface DeviceDao {
     fun insert(device: Device)
 
     @get:Query("SELECT * FROM device")
-    val getAllDevice: List<Device>
+    val getAllDevices: List<Device>
 
     @Query("Delete from device where bluetooth_mac = :bluetoothMac")
     fun deleteDevice(bluetoothMac: String)
+
+    @Delete
+    fun deleteDevice(device: Device)
+
     @Query("SELECT name from device where bluetooth_mac = :bluetoothMac")
     fun getDevice(bluetoothMac: String):List<String>
 

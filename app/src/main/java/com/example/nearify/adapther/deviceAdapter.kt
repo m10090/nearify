@@ -1,5 +1,5 @@
 // DeviceAdapter.kt
-package com.yourapp.adapter
+package com.example.nearify.adapther
 
 import android.view.LayoutInflater
 import android.view.View

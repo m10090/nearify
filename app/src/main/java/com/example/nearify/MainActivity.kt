@@ -58,13 +58,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-        val btnViewSavedDevices: Button = findViewById(R.id.btnSavedDevices)
-        btnViewSavedDevices.setOnClickListener {
-            val intent = Intent(this, SavedDevicesActivity::class.java)
-            startActivity(intent)
-        }
-
     }
 
 }
@@ -76,6 +69,8 @@ fun MainScreen(modifier: Modifier = Modifier) {
         GoToNotification()
         Spacer(modifier = Modifier)
         GoToAddDevicesList()
+        Spacer(modifier = Modifier)
+        GoToSavedDevicesList()
     }
 }
 
@@ -98,6 +93,17 @@ fun GoToNotification() {
         context.startActivity(intent)
     }) {
         Text(text = "Go To Notification")
+    }
+}
+
+@Composable
+fun GoToSavedDevicesList() {
+    val context = LocalContext.current
+    Button(onClick = {
+        val intent = Intent(context, SavedDevicesActivity::class.java)
+        context.startActivity(intent)
+    }) {
+        Text(text = "View Saved Devices")
     }
 }
 

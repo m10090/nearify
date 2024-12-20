@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/tvDeviceName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Device Name" />
+
+    <TextView
+        android:id="@+id/tvDeviceMac"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="MAC Address" />
+
+    <Button
+        android:id="@+id/btnDeleteDevice"
+        android:layout_width="wrap_content"
+        android:layout_height="114dp"
+        android:text="Delete"
+        android:theme="@style/ShapeAppearanceOverlay.Material3.Button" />
+
+    <Button
+        android:id="@+id/btnNearify"
+        android:layout_width="98dp"
+        android:layout_height="93dp"
+        android:layout_weight="0"
+        android:text="Add nearify"
+        android:theme="@style/ShapeAppearanceOverlay.Material3.Button" />
+
+</LinearLayout>

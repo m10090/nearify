@@ -12,7 +12,7 @@ import java.time.LocalDateTime
     foreignKeys = [ForeignKey(
         entity = Device::class,
         parentColumns = ["bluetooth_mac"],
-        childColumns = ["action_id"],
+        childColumns = ["device_id"],
         onDelete = ForeignKey.CASCADE
     )],
 )

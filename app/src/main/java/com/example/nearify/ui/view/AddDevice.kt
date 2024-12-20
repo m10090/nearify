@@ -26,6 +26,9 @@ import com.example.nearify.data.local.AppDatabase
 import com.example.nearify.data.model.Device
 import com.example.nearify.ui.theme.NearifyTheme
 import com.example.nearify.db
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 private var device = Device("AA:BB:CC:DD:EE:DD", "Cgmoreda")
@@ -41,7 +44,9 @@ class AddDevice : ComponentActivity() {
         setContent {
             Scaffold(modifier = Modifier.fillMaxSize())
             { innerPadding ->
-                MainScreen(modifier = Modifier.padding(innerPadding))
+                MainScreen(modifier = Modifier.padding(innerPadding)){
+                    this@AddDevice.finish()
+                }
             }
         }
     }
@@ -49,7 +54,7 @@ class AddDevice : ComponentActivity() {
 
 
 @Composable
-private fun MainScreen(modifier: Modifier = Modifier) {
+private fun MainScreen(modifier: Modifier = Modifier , finish:()->Unit ) {
     // make a mutable string named bluetooth
     val enteredMacAddress = remember { mutableStateOf(device.bluetoothMac) } // basic React js
     val enteredDeviceName = remember { mutableStateOf(device.name) }
@@ -86,8 +91,14 @@ private fun MainScreen(modifier: Modifier = Modifier) {
                 }
             }
         )
-        Button(onClick = {
-            db.deviceDao().insert(device)
+        Button(
+
+
+            onClick = {
+                GlobalScope.launch(Dispatchers.IO) {
+                    db.deviceDao().insert(device)
+                }
+                finish()
         }) {
             Text("Pair Device")
         }
@@ -114,7 +125,7 @@ private fun PreviewScreen() {
         Scaffold(
             modifier = Modifier.fillMaxSize()
         ) { innerPadding ->
-            MainScreen(modifier = Modifier.padding(innerPadding)) // This passes padding to MainScreen
+            MainScreen(modifier = Modifier.padding(innerPadding)){} // This passes padding to MainScreen
         }
     }
 }

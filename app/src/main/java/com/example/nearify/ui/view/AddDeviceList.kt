@@ -109,7 +109,7 @@ class AddDeviceList : AppCompatActivity() {
                         // for ActivityCompat#requestPermissions for more details.
                         "UnKnown"
                     } else
-                        device.name ?: return
+                        device.name ?: "UnKnown"
                     val deviceAddress = device.address
                     // add item to device name to listview
                     val deviceObj = Device(deviceAddress, deviceName)

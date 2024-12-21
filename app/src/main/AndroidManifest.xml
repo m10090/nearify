@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <uses-feature
@@ -33,7 +35,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.view.AddDevice"
-            android:exported="true"
+            android:exported="false"
             android:theme="@style/Theme.Nearify">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

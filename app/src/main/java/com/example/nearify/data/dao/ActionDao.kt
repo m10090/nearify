@@ -20,10 +20,15 @@ interface ActionDao {
     @Query(
         """
         SELECT * FROM `action`
-        WHERE device_id = :deviceId
+        WHERE device_id = :bluetoothMac
         """
     )
-    fun getActions(deviceId: Int): List<Action>
+    fun getActions(bluetoothMac: String): List<Action>
+
+    @Query("SELECT * FROM `action` WHERE device_id = :bluetoothMac AND action_leave ")
+    fun getLeaveActions(bluetoothMac: String): List<Action>
+    @Query("SELECT * FROM `action` WHERE device_id = :bluetoothMac AND action_sight ")
+    fun getEnterActions(bluetoothMac: String): List<Action>
 
     @Delete
     fun deleteAction(action: Action)
@@ -49,6 +54,6 @@ interface ActionDao {
     fun updateAction(action: Action)
 
     @Update
-    fun updateActions(vararg `actions`: Action)
+    fun updateActions(vararg actions: Action)
 
 }

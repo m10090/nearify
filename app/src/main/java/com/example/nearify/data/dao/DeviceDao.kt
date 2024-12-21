@@ -21,6 +21,8 @@ interface DeviceDao {
     @Query("Delete from device where bluetooth_mac = :bluetoothMac")
     fun deleteDevice(bluetoothMac: String)
 
+    @Query("Delete from device where bluetooth_mac in (:bluetoothMacs)")
+    fun deleteDevices(bluetoothMacs: Set<String>)
     @Delete
     fun deleteDevice(device: Device)
 
@@ -33,11 +35,11 @@ interface DeviceDao {
     @Update
     fun updateDevice(device: Device)
 
-    @get:Query("SELECT * FROM device where in_range")
+    @get:Query("SELECT * FROM device where in_range ORDER BY bluetooth_mac ASC")
     val getInRangeDevices: List<DeviceWithAction>
 
-    @get:Query("SELECT * FROM device where not in_range")
-    val getOutRangeDevices: List<DeviceWithAction>
+    @get:Query("SELECT * FROM device where not in_range ORDER BY bluetooth_mac ASC")
+    val getOutOfRangeDevices: List<DeviceWithAction>
 
 
 }

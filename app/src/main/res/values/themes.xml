@@ -7,6 +7,14 @@
     </style>
     <!-- Base application theme. -->
 
+    <style name="Theme.Nearify.button">
+        <item name="android:background"> @drawable/custom_button_background </item>
+        <item name="android:gravity"> center </item>
+        <item name= "android:text">"NEARIFY"</item>
+        <item name="android:textColor">@color/white </item>
+        <item name="android:textSize"> 16sp</item>
+        <item name="android:textStyle"> bold</item>
+    </style>
     <style name="Base.Theme.Nearify" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->

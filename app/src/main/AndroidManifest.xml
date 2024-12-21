@@ -3,12 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.NEARBY_DEVICES" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
@@ -28,6 +29,9 @@
         tools:targetApi="31">
 
         <activity
+            android:name=".Perms"
+            android:exported="false" />
+        <activity
             android:name=".ui.view.AddedDevicesList"
             android:exported="false" />
         <activity
@@ -35,7 +39,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.view.AddDevice"
-            android:exported="false"
+            android:exported="true"
             android:theme="@style/Theme.Nearify">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

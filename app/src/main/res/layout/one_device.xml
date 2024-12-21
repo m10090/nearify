@@ -37,10 +37,10 @@
 <!--</LinearLayout>-->
 
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
     android:background="#2F2F2F"
@@ -95,7 +95,7 @@
     <!-- Statistics Section -->
 
     <!-- Action Buttons -->
-    <LinearLayout
+    <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
@@ -105,19 +105,17 @@
 
         <Button
             android:id="@+id/btnNearify"
-            android:layout_width="181dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:background="@drawable/custom_button_background"
-            android:gravity="center"
-            android:text="NEARIFY"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:text="Nearify"
+            app:layout_flexGrow="2"
+            style="@style/Theme.Nearify.button"
+      />
 
         <Button
             android:id="@+id/btnDeleteDevice"
-            android:layout_width="129dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="@drawable/orange_button_background"
@@ -125,8 +123,9 @@
             android:text="Delete"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_flexGrow="1"/>
 
 
-    </LinearLayout>
+    </com.google.android.flexbox.FlexboxLayout>
 </LinearLayout>

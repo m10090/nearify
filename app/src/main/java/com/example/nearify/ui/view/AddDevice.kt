@@ -84,7 +84,7 @@ private fun MainScreen(modifier: Modifier = Modifier , finish:()->Unit ) {
                     enteredMacAddress.value != device.bluetoothMac
                 ) {
                     if (validateMacAddress(enteredMacAddress.value, context)) {
-                        device = device.copy(bluetoothMac = enteredMacAddress.value)
+                        device = device.copy(bluetoothMac = (enteredMacAddress.value.uppercase()))
                     } else {
                         enteredMacAddress.value = device.bluetoothMac
                     }
@@ -92,8 +92,6 @@ private fun MainScreen(modifier: Modifier = Modifier , finish:()->Unit ) {
             }
         )
         Button(
-
-
             onClick = {
                 GlobalScope.launch(Dispatchers.IO) {
                     db.deviceDao().insert(device)

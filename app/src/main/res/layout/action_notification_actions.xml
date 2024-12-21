@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.view.ActionNotification"
     app:flexDirection="column"
+    android:theme="@style/Theme.Nearify"
     >
 
     <com.google.android.flexbox.FlexboxLayout

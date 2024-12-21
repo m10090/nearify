@@ -1,15 +1,16 @@
 package com.example.nearify
 
+import android.app.NotificationManager
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothSocket
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DevicesOther
 import androidx.compose.material.icons.filled.Notifications
@@ -18,13 +19,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.NotificationCompat
 import androidx.room.Room
 import com.example.nearify.data.local.AppDatabase
 import com.example.nearify.data.model.Device
@@ -34,12 +34,12 @@ import com.example.nearify.ui.view.AddDeviceList
 import com.example.nearify.ui.view.SavedDevicesActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 
-
-
-val db : AppDatabase by lazy {
+val db: AppDatabase by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
     _db_intial
 }
 lateinit var _db_intial: AppDatabase
@@ -55,13 +55,17 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         GlobalScope.launch(Dispatchers.IO) {
 
-            _db_intial = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "nearify-db")
-                .build()
+            _db_intial =
+                Room.databaseBuilder(applicationContext, AppDatabase::class.java, "nearify-db")
+                    .build()
 
             if (db.deviceDao().getAllDevices.isEmpty()) {
                 db.deviceDao().insert(Device("AA:BB:CC:DD:EE:FF", "Cgmoreda"))
             }
 
+        }
+        GlobalScope.launch {
+            connect()
         }
         setContent {
             NearifyTheme {
@@ -73,17 +77,92 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @Suppress("DEPRECATION", "MissingPermission")
+    private suspend fun connect() {
+        delay(2000)
+        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+        startActivityForResult(enableBtIntent, 1)
+        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+
+        val pairedDevices = bluetoothAdapter.bondedDevices
+        val devices = db.deviceDao().getAllDevices
+        val to_delete = mutableSetOf<String>()
+        devices.forEach { device ->
+            if(pairedDevices.none {
+                it.address == device.bluetoothMac
+            }){
+                to_delete.add(device.bluetoothMac)
+            }
+        }
+        db.deviceDao().deleteDevices(to_delete)
+        val newInRange = mutableSetOf<String>()
+        for (device in pairedDevices) {
+            val deviceAddress = device.address
+            if (devices.none {
+                    it.bluetoothMac == deviceAddress
+                }) continue
+            // Use deviceName and deviceAddress to identify the paired device
+            lateinit var bluetoothSocket: BluetoothSocket
+            val uuid = device.uuids[0].uuid // UUID of the device’s service
+
+            try {
+                bluetoothSocket = device.createRfcommSocketToServiceRecord(uuid)
+                bluetoothSocket.connect()
+                // Now you are connected, you can start communicating with the device
+                newInRange.add(deviceAddress)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        val newOutOfRange = setOf(*devices.map {
+            it.bluetoothMac
+        }.toTypedArray()) - newInRange;
+        val oldInRange = db.deviceDao().getInRangeDevices.map { it.device.bluetoothMac }
+        val oldOutOfRange = db.deviceDao().getOutOfRangeDevices.map { it.device.bluetoothMac }
+        val notification = mutableListOf<String>()
+        oldInRange.forEach { device ->
+            if (newOutOfRange.contains(device)) {
+                db.deviceDao().updateDevice(device, false)
+                notification.addAll(db.actionDao().getLeaveActions(device).map {
+                    it.message
+                })
+            }
+        }
+        oldOutOfRange.forEach { device ->
+            if(newInRange.contains(device)) {
+                db.deviceDao().updateDevice(device, false)
+                notification.addAll(db.actionDao().getEnterActions(device).map {
+                    it.message
+                })
+            }
+        }
+        val channelId = "notification_channel"
+        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.ic_launcher_foreground) // Use an appropriate notification icon
+            .setContentTitle("Somebody is here or isn't")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+
+// Assuming 'notification' is a list of messages
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notification.forEachIndexed { index, message ->
+            notificationBuilder.setContentText(message)
+            val notificationId = index + 1
+            notificationManager.notify(notificationId, notificationBuilder.build())
+        }
+
+    }
 }
 
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
+private fun MainScreen(modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         ButtonsColumn()
     }
 }
 
-@Composable
 @Preview
+@Composable
 fun previewMainScreen() {
     NearifyTheme {
         Scaffold(
@@ -96,10 +175,11 @@ fun previewMainScreen() {
 }
 
 @Composable
-fun ButtonsColumn() {
+private fun ButtonsColumn() {
     Column(
         modifier = Modifier
-            .padding(16.dp).padding(vertical = 200.dp),
+            .padding(16.dp)
+            .padding(vertical = 200.dp),
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -112,15 +192,13 @@ fun ButtonsColumn() {
 }
 
 
-
 @Composable
-fun GoToNotification() {
+private fun GoToNotification() {
     val context = LocalContext.current
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
-            , // Added horizontal padding
+            .height(100.dp), // Added horizontal padding
         onClick = {
             val intent = Intent(context, ActionNotification::class.java)
             context.startActivity(intent)
@@ -149,13 +227,12 @@ fun GoToNotification() {
 }
 
 @Composable
-fun GoToAddDevicesList() {
+private fun GoToAddDevicesList() {
     val context = LocalContext.current
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
-            , // Added horizontal padding
+            .height(100.dp), // Added horizontal padding
         onClick = {
             val intent = Intent(context, AddDeviceList::class.java)
             context.startActivity(intent)
@@ -184,13 +261,12 @@ fun GoToAddDevicesList() {
 }
 
 @Composable
-fun GoToSavedDevicesList() {
+private fun GoToSavedDevicesList() {
     val context = LocalContext.current
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
-            , // Added horizontal padding
+            .height(100.dp), // Added horizontal padding
         onClick = {
             val intent = Intent(context, SavedDevicesActivity::class.java)
             context.startActivity(intent)

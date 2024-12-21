@@ -6,7 +6,7 @@ import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -36,6 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 
@@ -119,36 +120,37 @@ class MainActivity : ComponentActivity() {
         }.toTypedArray()) - newInRange;
         val oldInRange = db.deviceDao().getInRangeDevices.map { it.device.bluetoothMac }
         val oldOutOfRange = db.deviceDao().getOutOfRangeDevices.map { it.device.bluetoothMac }
-        val notification = mutableListOf<String>()
+        val notifications = mutableListOf<String>()
         oldInRange.forEach { device ->
             if (newOutOfRange.contains(device)) {
                 db.deviceDao().updateDevice(device, false)
-                notification.addAll(db.actionDao().getLeaveActions(device).map {
+                notifications.addAll(db.actionDao().getLeaveActions(device).map {
                     it.message
                 })
             }
         }
         oldOutOfRange.forEach { device ->
             if(newInRange.contains(device)) {
-                db.deviceDao().updateDevice(device, false)
-                notification.addAll(db.actionDao().getEnterActions(device).map {
+                db.deviceDao().updateDevice(device, true)
+                notifications.addAll(db.actionDao().getEnterActions(device).map {
                     it.message
                 })
             }
         }
         val channelId = "notification_channel"
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_launcher_foreground) // Use an appropriate notification icon
+            .setSmallIcon(R.drawable.notification_icon) // Use an appropriate notification icon
             .setContentTitle("Somebody is here or isn't")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setAutoCancel(true)
 
-// Assuming 'notification' is a list of messages
+        // Assuming 'notification' is a list of messages
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notification.forEachIndexed { index, message ->
-            notificationBuilder.setContentText(message)
+        notifications.forEachIndexed { index, message ->
+            val notification = notificationBuilder.setContentText(message)
             val notificationId = index + 1
-            notificationManager.notify(notificationId, notificationBuilder.build())
+            withContext(Dispatchers.Main) {
+                Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
+            }
         }
 
     }

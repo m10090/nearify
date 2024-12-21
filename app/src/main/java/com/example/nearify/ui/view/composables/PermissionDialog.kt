@@ -80,13 +80,13 @@ class BluetoothPermissionTextProvider : PermissionTextProvider {
     }
 }
 
-class NearbyDevicesTextProvider : PermissionTextProvider {
+class pushNotifyTextProvider : PermissionTextProvider {
     override fun getDescription(isPermanentlyDeclined: Boolean): String {
         return if (isPermanentlyDeclined) {
-            "It seems you permanently declined NEARBY_DEVICES permission. " +
+            "It seems you permanently declined Notifications permission. " +
                     "You can go to the app settings to grant it."
         } else {
-            "This app needs access to your NEARBY_DEVICES so that the app can work"
+            "This app needs access to your Notifications so that the app can work"
 
         }
     }

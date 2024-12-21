@@ -5,31 +5,33 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import android.Manifest
-import android.R.style.Theme
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+// import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.nearify.ui.theme.NearifyTheme
 import com.example.nearify.ui.view.PermsViewModle
 import com.example.nearify.ui.view.composables.BluetoothPermissionTextProvider
 import com.example.nearify.ui.view.composables.LocationPermissionTextProvider
-import com.example.nearify.ui.view.composables.NearbyDevicesTextProvider
 import com.example.nearify.ui.view.composables.PermissionDialog
+import com.example.nearify.ui.view.composables.pushNotifyTextProvider
 
 class Perms : ComponentActivity() {
+    private val permissionsToRequest = arrayOf(
+        Manifest.permission.BLUETOOTH_ADVERTISE,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.POST_NOTIFICATIONS
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -37,20 +39,10 @@ class Perms : ComponentActivity() {
                 val viewModel = viewModel<PermsViewModle>()
                 val dialogQueue = viewModel.visiblePermissionDialogQueue
 
-                val cameraPermissionResultLauncher = rememberLauncherForActivityResult(
-                    contract = ActivityResultContracts.RequestPermission(),
-                    onResult = { isGranted ->
-                        viewModel.onPermissionResult(
-                            permission = Manifest.permission.BLUETOOTH,
-                            isGranted = isGranted
-                        )
-                    }
-                )
-
                 val multiplePermissionResultLauncher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.RequestMultiplePermissions(),
                     onResult = { perms ->
-                        perms.keys.forEach { permission ->
+                        permissionsToRequest.forEach { permission ->
                             viewModel.onPermissionResult(
                                 permission = permission,
                                 isGranted = perms[permission] == true
@@ -65,18 +57,9 @@ class Perms : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Button(onClick = {
-                        cameraPermissionResultLauncher.launch(
-                            Manifest.permission.CAMERA
-                        )
+                        multiplePermissionResultLauncher.launch(permissionsToRequest)
                     }) {
-                        Text(text = "Request one permission")
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = {
-                        multiplePermissionResultLauncher.launch(
-                            arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.ACCESS_FINE_LOCATION)
-                        )
-                    }) {
+
                         Text(text = "Request multiple permission")
                     }
                 }
@@ -88,6 +71,10 @@ class Perms : ComponentActivity() {
                             permissionTextProvider = when (permission) {
                                 Manifest.permission.BLUETOOTH -> {
                                     BluetoothPermissionTextProvider()
+                                }
+
+                                Manifest.permission.POST_NOTIFICATIONS -> {
+                                    pushNotifyTextProvider()
                                 }
 
                                 Manifest.permission.ACCESS_FINE_LOCATION -> {
@@ -113,6 +100,7 @@ class Perms : ComponentActivity() {
         }
     }
 }
+
 fun Activity.openAppSettings() {
     Intent(
         Settings.ACTION_APPLICATION_DETAILS_SETTINGS,

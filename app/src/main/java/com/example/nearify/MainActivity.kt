@@ -15,12 +15,31 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.core.app.NotificationCompat
+import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DevicesOther
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Save
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +48,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+
 import androidx.core.app.NotificationCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
@@ -36,6 +56,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+
 import androidx.room.Room
 import com.example.nearify.data.local.AppDatabase
 import com.example.nearify.data.model.Device
@@ -51,18 +72,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.IOException
 
 
 val db: AppDatabase by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
-    _db_intial
+    _db_intial!!
 }
-lateinit var _db_intial: AppDatabase
 
 
+var _db_intial: AppDatabase? = null
 
 class MainActivity : AppCompatActivity() {
 
@@ -71,6 +89,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        val intent = Intent(this, Perms::class.java)
+        startActivity(intent)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -87,6 +108,7 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
+
         fragmentManager = supportFragmentManager
         openFragment(NotificationsFragment())
 
@@ -94,9 +116,13 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "categorie", Toast.LENGTH_SHORT).show()
         }
 
-        // Initialize the database
+
         GlobalScope.launch(Dispatchers.IO) {
 
+            if(_db_intial != null) {
+                return@launch
+            }
+            scheduleJob()
             _db_intial =
                 Room.databaseBuilder(applicationContext, AppDatabase::class.java, "nearify-db")
                     .build()
@@ -106,10 +132,16 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-        GlobalScope.launch {
-            connect()
+
         }
     }
+    private fun scheduleJob() {
+        // Get the JobScheduler system service
+        val serviceIntent = Intent(
+            this,
+            NearifyService::class.java
+        )
+        startService(serviceIntent)
 
     override fun onBackPressed() {
         super.onBackPressedDispatcher.onBackPressed()
@@ -120,91 +152,10 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.replace(R.id.fragment_container, fragment)
         fragmentTransaction.commit()
     }
-//
-//    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-//        when(item.itemId){
-//            R.id.nav_saved_devices-> openFragment(SavedDevicesFragment())
-//            R.id.nav_add_device -> openFragment(AddDevuceFragment())
-//            R.id.nav_notifi -> openFragment(NotificationsFragment())
-//        }
-//        binding.drawerLayout.closeDrawer(GravityCompat.START)
-//        return true
-//    }
 
-    @Suppress("DEPRECATION", "MissingPermission")
-    private suspend fun connect() {
-        delay(2000)
-        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-        startActivityForResult(enableBtIntent, 1)
-        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
 
-        val pairedDevices = bluetoothAdapter.bondedDevices
-        val devices = db.deviceDao().getAllDevices
-        val to_delete = mutableSetOf<String>()
-        devices.forEach { device ->
-            if(pairedDevices.none {
-                    it.address == device.bluetoothMac
-                }){
-                to_delete.add(device.bluetoothMac)
-            }
-        }
-        db.deviceDao().deleteDevices(to_delete)
-        val newInRange = mutableSetOf<String>()
-        for (device in pairedDevices) {
-            val deviceAddress = device.address
-            if (devices.none {
-                    it.bluetoothMac == deviceAddress
-                }) continue
-            // Use deviceName and deviceAddress to identify the paired device
-            lateinit var bluetoothSocket: BluetoothSocket
-            val uuid = device.uuids[0].uuid // UUID of the device’s service
 
-            try {
-                bluetoothSocket = device.createRfcommSocketToServiceRecord(uuid)
-                bluetoothSocket.connect()
-                // Now you are connected, you can start communicating with the device
-                newInRange.add(deviceAddress)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-        val newOutOfRange = setOf(*devices.map {
-            it.bluetoothMac
-        }.toTypedArray()) - newInRange;
-        val oldInRange = db.deviceDao().getInRangeDevices.map { it.device.bluetoothMac }
-        val oldOutOfRange = db.deviceDao().getOutOfRangeDevices.map { it.device.bluetoothMac }
-        val notifications = mutableListOf<String>()
-        oldInRange.forEach { device ->
-            if (newOutOfRange.contains(device)) {
-                db.deviceDao().updateDevice(device, false)
-                notifications.addAll(db.actionDao().getLeaveActions(device).map {
-                    it.message
-                })
-            }
-        }
-        oldOutOfRange.forEach { device ->
-            if(newInRange.contains(device)) {
-                db.deviceDao().updateDevice(device, true)
-                notifications.addAll(db.actionDao().getEnterActions(device).map {
-                    it.message
-                })
-            }
-        }
-        val channelId = "notification_channel"
-        val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.notification_icon) // Use an appropriate notification icon
-            .setContentTitle("Somebody is here or isn't")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-        // Assuming 'notification' is a list of messages
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notifications.forEachIndexed { index, message ->
-            val notification = notificationBuilder.setContentText(message)
-            val notificationId = index + 1
-            withContext(Dispatchers.Main) {
-                Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
-            }
-        }
 
     }
 

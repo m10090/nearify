@@ -51,9 +51,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
+        //val intent = Intent(this, Perms::class.java)
+        //startActivity(intent)
+
         setContentView(R.layout.activity_saved_devices)
-
-
 
         enableEdgeToEdge()
         GlobalScope.launch(Dispatchers.IO) {
@@ -87,6 +91,7 @@ class MainActivity : ComponentActivity() {
             NearifyService::class.java
         )
         startService(serviceIntent)
+
 
 
     }

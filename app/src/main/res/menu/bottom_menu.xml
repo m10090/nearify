@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/noti_btn"
+        android:title="Nearify"
+        android:icon="@drawable/notifications" />
+
+    <item
+        android:id="@+id/saved_devices_btn"
+        android:title="Saved "
+        android:icon="@drawable/saved_devices" />
+
+    <item
+        android:title=""
+        android:enabled="true" />
+    <item
+        android:id="@+id/add_device_btn"
+        android:title="Add"
+        android:icon="@drawable/add_device" />
+
+
+    <item
+        android:id="@+id/info_btn"
+        android:title="Info"
+        android:icon="@drawable/info" />
+
+
+
+
+</menu>

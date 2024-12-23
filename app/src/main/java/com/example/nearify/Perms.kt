@@ -13,6 +13,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -48,8 +49,17 @@ class Perms : ComponentActivity() {
                                 isGranted = perms[permission] == true
                             )
                         }
+
+                        if (viewModel.areAllPermissionsGranted(permissionsToRequest)) {
+                            // Proceed to the next step after permissions are granted
+                            proceedToNextScreen()
+                        }
                     }
                 )
+
+                LaunchedEffect(Unit) {
+                        multiplePermissionResultLauncher.launch(permissionsToRequest)
+                }
 
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -99,7 +109,15 @@ class Perms : ComponentActivity() {
             }
         }
     }
+
+    private fun proceedToNextScreen() {
+        // Intent to go to the main activity or another screen
+        // Example:
+        // startActivity(Intent(this, MainActivity::class.java))
+        finish() // Close the Perms activity
+    }
 }
+
 
 fun Activity.openAppSettings() {
     Intent(

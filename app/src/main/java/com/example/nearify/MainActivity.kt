@@ -48,9 +48,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
+        //val intent = Intent(this, Perms::class.java)
+        //startActivity(intent)
+
         setContentView(R.layout.activity_saved_devices)
-
-
 
         enableEdgeToEdge()
         GlobalScope.launch(Dispatchers.IO) {
@@ -88,9 +92,9 @@ class MainActivity : ComponentActivity() {
         val devices = db.deviceDao().getAllDevices
         val to_delete = mutableSetOf<String>()
         devices.forEach { device ->
-            if(pairedDevices.none {
-                it.address == device.bluetoothMac
-            }){
+            if (pairedDevices.none {
+                    it.address == device.bluetoothMac
+                }) {
                 to_delete.add(device.bluetoothMac)
             }
         }
@@ -129,7 +133,7 @@ class MainActivity : ComponentActivity() {
             }
         }
         oldOutOfRange.forEach { device ->
-            if(newInRange.contains(device)) {
+            if (newInRange.contains(device)) {
                 db.deviceDao().updateDevice(device, false)
                 notification.addAll(db.actionDao().getEnterActions(device).map {
                     it.message
@@ -144,7 +148,8 @@ class MainActivity : ComponentActivity() {
             .setAutoCancel(true)
 
 // Assuming 'notification' is a list of messages
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notification.forEachIndexed { index, message ->
             notificationBuilder.setContentText(message)
             val notificationId = index + 1

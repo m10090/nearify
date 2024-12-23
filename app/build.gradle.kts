@@ -72,7 +72,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     kapt("androidx.room:room-compiler:2.6.1")
 
-
+    implementation("androidx.work:work-runtime:2.8.0")
 
     // Testing (optional)
     testImplementation("androidx.room:room-testing:2.6.1")

@@ -70,13 +70,12 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.compose.material:material-icons-extended")
-
+    implementation("androidx.work:work-runtime:2.8.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.lifecycle:lifecycle-reactivestreams-ktx:2.8.7")
     implementation("androidx.compose.material:material")
 
     kapt("androidx.room:room-compiler:2.6.1")
-
 
     // Testing (optional)
     testImplementation("androidx.room:room-testing:2.6.1")

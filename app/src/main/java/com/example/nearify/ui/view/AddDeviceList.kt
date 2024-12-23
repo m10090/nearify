@@ -21,6 +21,8 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.nearify.ui.view.composables.DeviceCard
 import com.example.nearify.R
 import com.example.nearify.data.model.Device
+import com.example.nearify.data.model.savedDevice
+import com.example.nearify.db
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -32,6 +34,9 @@ class AddDeviceList : AppCompatActivity() {
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothManager.adapter
     }
+
+    private lateinit var savedDevices : Set<String>
+
     private lateinit var listview: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +48,17 @@ class AddDeviceList : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val set = setOf(*db.deviceDao().getAllDevices.map {
+                it.bluetoothMac
+            }.toTypedArray())
+            withContext(Dispatchers.Main){
+                savedDevices = set
+            }
+
         }
 
         if (bluetoothAdapter == null) {
@@ -90,8 +106,9 @@ class AddDeviceList : AppCompatActivity() {
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val action = intent?.action
-                if (BluetoothDevice.ACTION_FOUND == action) {
 
+
+                if (BluetoothDevice.ACTION_FOUND == action) {
                     val device: BluetoothDevice =
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE) ?: return
 
@@ -113,14 +130,23 @@ class AddDeviceList : AppCompatActivity() {
                     val deviceAddress = device.address
                     // add item to device name to listview
                     val deviceObj = Device(deviceAddress, deviceName)
+
+
+                    //// iam hereeere
                     GlobalScope.launch(Dispatchers.Main) {
-                        devices.add(deviceObj)
+                        if(deviceObj.bluetoothMac !in savedDevices){
+                            devices.add(deviceObj)
+                        }
+                        else return@launch
+
                         listview.addView(ComposeView(this@AddDeviceList).apply {
                             setContent {
                                 DeviceCard(deviceObj)
                             }
                         })
                     }
+
+
                 }
             }
         }
@@ -131,3 +157,4 @@ class AddDeviceList : AppCompatActivity() {
 
 
 }
+

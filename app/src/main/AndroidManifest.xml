@@ -8,8 +8,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
@@ -25,6 +27,9 @@
         android:theme="@style/Theme.Nearify"
         tools:targetApi="31">
 
+        <activity android:name=".Perms"
+            android:exported="true" />
+
         <activity
             android:name=".ui.view.AddedDevicesList"
             android:exported="false" />
@@ -37,6 +42,7 @@
             android:theme="@style/Theme.Nearify">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -55,15 +61,19 @@
             android:theme="@style/Theme.Nearify">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- Add the SavedDevicesActivity here -->
+        </activity> <!-- Add the SavedDevicesActivity here -->
         <activity
             android:name=".ui.view.SavedDevicesActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat" />
+        <service
+            android:name=".NearifyService"
+            android:foregroundServiceType="location"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
 
     </application>
 

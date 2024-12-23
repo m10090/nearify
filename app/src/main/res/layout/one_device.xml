@@ -1,37 +1,131 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:orientation="horizontal"-->
+<!--    android:padding="8dp">-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/tvDeviceName"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_weight="1"-->
+<!--        android:text="Device Name" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/tvDeviceMac"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:padding="16dp"-->
+<!--        android:text="MAC Address" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/btnDeleteDevice"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="114dp"-->
+<!--        android:text="Delete"-->
+<!--        android:theme="@style/ShapeAppearanceOverlay.Material3.Button" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/btnNearify"-->
+<!--        android:layout_width="98dp"-->
+<!--        android:layout_height="93dp"-->
+<!--        android:layout_weight="0"-->
+<!--        android:text="Add nearify"-->
+<!--        android:theme="@style/ShapeAppearanceOverlay.Material3.Button" />-->
+
+<!--</LinearLayout>-->
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="8dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#2F2F2F"
+    android:gravity="center">
 
-    <TextView
-        android:id="@+id/tvDeviceName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Device Name" />
 
-    <TextView
-        android:id="@+id/tvDeviceMac"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/background_shape"
         android:padding="16dp"
-        android:text="MAC Address" />
+        android:elevation="4dp">
 
-    <Button
-        android:id="@+id/btnDeleteDevice"
-        android:layout_width="wrap_content"
-        android:layout_height="114dp"
-        android:text="Delete"
-        android:theme="@style/ShapeAppearanceOverlay.Material3.Button" />
+        <!-- Profile Image -->
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_user_icon"
+            android:scaleType="centerCrop"
+            android:layout_marginEnd="16dp"
+                                             />
 
-    <Button
-        android:id="@+id/btnNearify"
-        android:layout_width="98dp"
-        android:layout_height="93dp"
-        android:layout_weight="0"
-        android:text="Add nearify"
-        android:theme="@style/ShapeAppearanceOverlay.Material3.Button" />
+        <!-- Name and Title Section -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="76dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/tvDeviceName"
+                android:layout_width="233dp"
+                android:layout_height="wrap_content"
+                android:text="Danny McLoan"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvDeviceMac"
+                android:layout_width="232dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Senior Journalist"
+                android:textColor="#666666"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Statistics Section -->
+
+    <!-- Action Buttons -->
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/btnNearify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="Nearify"
+            app:layout_flexGrow="2"
+            style="@style/Theme.Nearify.button"
+      />
+
+        <Button
+            android:id="@+id/btnDeleteDevice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/orange_button_background"
+            android:gravity="center"
+            android:text="Delete"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_flexGrow="1"/>
+
+
+    </com.google.android.flexbox.FlexboxLayout>
 </LinearLayout>

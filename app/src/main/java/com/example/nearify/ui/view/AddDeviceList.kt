@@ -1,6 +1,7 @@
 package com.example.nearify.ui.view
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
@@ -39,6 +40,7 @@ class AddDeviceList : AppCompatActivity() {
 
     private lateinit var listview: LinearLayout
 
+    @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -69,30 +71,9 @@ class AddDeviceList : AppCompatActivity() {
         if (!bluetoothAdapter.isEnabled) {
             // Bluetooth is not enabled, prompt user to enable it
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.BLUETOOTH_CONNECT
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return
-            }
             startActivityForResult(enableBtIntent, 1)
         }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1
-            )
-        }
+
 
 
         if (bluetoothAdapter.isDiscovering) {
@@ -104,6 +85,7 @@ class AddDeviceList : AppCompatActivity() {
 
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
         val receiver = object : BroadcastReceiver() {
+            @SuppressLint("MissingPermission")
             override fun onReceive(context: Context?, intent: Intent?) {
                 val action = intent?.action
 
@@ -112,21 +94,8 @@ class AddDeviceList : AppCompatActivity() {
                     val device: BluetoothDevice =
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE) ?: return
 
-                    val deviceName = if (ActivityCompat.checkSelfPermission(
-                            this@AddDeviceList,
-                            Manifest.permission.BLUETOOTH_CONNECT
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        "UnKnown"
-                    } else
-                        device.name ?: "UnKnown"
+                    val deviceName =
+                        device.name ?: return
                     val deviceAddress = device.address
                     // add item to device name to listview
                     val deviceObj = Device(deviceAddress, deviceName)

@@ -1,7 +1,9 @@
 package com.example.nearify.ui.view
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TableLayout
 import android.widget.TableRow
@@ -10,6 +12,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import com.example.nearify.MainActivity
 import com.example.nearify.R
 import kotlinx.coroutines.Dispatchers
@@ -20,25 +23,27 @@ import com.example.nearify.db
 
 
 
-class ActionNotification : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.action_notification_actions)
+class ActionNotification : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val root = inflater.inflate(R.layout.action_notification_actions,container,false)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(root.findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val table = findViewById<TableLayout>(R.id.notification_table)
-        val loadingActionNotification = findViewById<TextView>(R.id.loading_action_notification)
+
+        val table = root.findViewById<TableLayout>(R.id.notification_table)
+        val loadingActionNotification = root.findViewById<TextView>(R.id.loading_action_notification)
 
         GlobalScope.launch(Dispatchers.IO) {
             val notifications = db.actionDao().getAllActions
 
-               runOnUiThread() {
-                val context = this@ActionNotification
+               withContext(Dispatchers.Main) {
+                val context = requireContext()
                 if (notifications.isNotEmpty()) {
                     notifications.forEach { x ->
                         val action = x.action
@@ -55,9 +60,13 @@ class ActionNotification : AppCompatActivity() {
                                 TextView(context).apply {
                                     text = action.message
                                 },
-                                // Where col
+                                // when col
                                 TextView(context).apply {
-                                    text = if (action.onLeave) "Leave" else "Enter"
+                                    text = if (action.onLeave) "Leave" else "not"
+                                },
+                                // when col
+                                TextView(context).apply {
+                                    text = if (action.onSight) "Sight" else "not"
                                 },
                                 // Device name col
                                 TextView(context).apply {
@@ -86,6 +95,7 @@ class ActionNotification : AppCompatActivity() {
                 }
             }
         }
+        return root
     }
 }
 

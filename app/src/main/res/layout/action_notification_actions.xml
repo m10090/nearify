@@ -50,7 +50,9 @@
             <TextView
                 android:text="Message"/>
             <TextView
-                android:text="Where"/>
+                android:text="on Sight"/>
+            <TextView
+                android:text="on Leave"/>
             <TextView
                 android:text="Device name"/>
             <TextView

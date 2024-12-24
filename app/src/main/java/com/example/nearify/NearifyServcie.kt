@@ -32,6 +32,14 @@ class NearifyService : Service() {
         // Start the first task
         handler.post(runnable)
     }
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        // Start the service in foreground
+        return START_STICKY
+    }
+    override fun onBind(intent: Intent): IBinder? {
+        // This is a started service, not bound, so we return null
+        return null
+    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -40,13 +48,11 @@ class NearifyService : Service() {
         handler.removeCallbacks(runnable)
     }
 
-    override fun onBind(p0: Intent?): IBinder? {
-        return null
-    }
+
 
 
     private val runnable: Runnable = object : Runnable {
-
+        @SuppressLint("MissingPermission")
         override fun run() {
             val channelId = "notification_channel"
             val notificationManager =
@@ -137,6 +143,5 @@ class NearifyService : Service() {
         }
     }
 }
-
 
 

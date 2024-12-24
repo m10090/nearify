@@ -49,13 +49,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-import androidx.core.app.NotificationCompat
-import androidx.core.view.GravityCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 
 import androidx.room.Room
 import com.example.nearify.data.local.AppDatabase
@@ -85,18 +78,19 @@ var _db_intial: AppDatabase? = null
 class MainActivity : AppCompatActivity() {
 
     private lateinit var fragmentManager: FragmentManager
-    private lateinit var binding: ActivityMainBinding
+    companion object {
+        lateinit var binding: ActivityMainBinding
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
-        val intent = Intent(this, Perms::class.java)
-        startActivity(intent)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+//
+//        val intent = Intent(this, Perms::class.java)
+//        startActivity(intent)
         // Set up the toolbar
-        setSupportActionBar(binding.toolbar)
 
         // Set up the bottom navigation
         binding.bottomNavigation.setOnItemSelectedListener { item ->
@@ -119,7 +113,7 @@ class MainActivity : AppCompatActivity() {
 
         GlobalScope.launch(Dispatchers.IO) {
 
-            if(_db_intial != null) {
+            if (_db_intial != null) {
                 return@launch
             }
             scheduleJob()
@@ -133,15 +127,18 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        }
     }
+    private var serviceIntent: Intent? = null
     private fun scheduleJob() {
         // Get the JobScheduler system service
-        val serviceIntent = Intent(
+        if (serviceIntent != null) return
+
+        serviceIntent = Intent(
             this,
             NearifyService::class.java
         )
         startService(serviceIntent)
+    }
 
     override fun onBackPressed() {
         super.onBackPressedDispatcher.onBackPressed()
@@ -152,16 +149,9 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.replace(R.id.fragment_container, fragment)
         fragmentTransaction.commit()
     }
-
-
-
-
-
-    }
-
-
-
 }
+
+
 //
 //
 //class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {

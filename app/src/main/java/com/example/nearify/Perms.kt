@@ -52,7 +52,7 @@ class Perms : ComponentActivity() {
 
                         if (viewModel.areAllPermissionsGranted(permissionsToRequest)) {
                             // Proceed to the next step after permissions are granted
-                            proceedToNextScreen()
+                            finish()
                         }
                     }
                 )
@@ -110,12 +110,6 @@ class Perms : ComponentActivity() {
         }
     }
 
-    private fun proceedToNextScreen() {
-        // Intent to go to the main activity or another screen
-        // Example:
-        // startActivity(Intent(this, MainActivity::class.java))
-        finish() // Close the Perms activity
-    }
 }
 
 

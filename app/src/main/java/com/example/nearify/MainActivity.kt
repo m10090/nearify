@@ -2,6 +2,7 @@ package com.example.nearify
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -15,8 +16,10 @@ import com.example.nearify.data.model.Action
 import com.example.nearify.data.model.Device
 import com.example.nearify.databinding.ActivityMainBinding
 import com.example.nearify.ui.view.ActionNotification
+import com.example.nearify.ui.view.AddDeviceList
 
 import com.example.nearify.ui.view.AddDevuceFragment
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -55,14 +58,12 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-
+        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
+            openFragment(AddDeviceList())
+        }
 
         fragmentManager = supportFragmentManager
         openFragment(NotificationsFragment())
-
-        binding.fab.setOnClickListener {
-            Toast.makeText(this, "categorie", Toast.LENGTH_SHORT).show()
-        }
 
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -101,7 +102,7 @@ class MainActivity : AppCompatActivity() {
         super.onBackPressedDispatcher.onBackPressed()
     }
 
-    private fun openFragment(fragment: Fragment) {
+     fun openFragment(fragment: Fragment) {
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container, fragment)
         fragmentTransaction.commit()

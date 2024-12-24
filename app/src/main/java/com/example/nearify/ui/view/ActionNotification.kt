@@ -43,7 +43,7 @@ class ActionNotification : Fragment() {
             val notifications = db.actionDao().getAllActions
 
                withContext(Dispatchers.Main) {
-                val context = requireContext()
+
                 if (notifications.isNotEmpty()) {
                     notifications.forEach { x ->
                         val action = x.action

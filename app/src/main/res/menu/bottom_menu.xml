@@ -13,7 +13,8 @@
 
     <item
         android:title=""
-        android:enabled="true" />
+        android:enabled="false"
+        />
     <item
         android:id="@+id/add_device_btn"
         android:title="Add"

@@ -56,4 +56,7 @@ interface ActionDao {
     @Update
     fun updateActions(vararg actions: Action)
 
+    @Query("SELECT count(*) FROM `action` WHERE device_id = :bluetoothMac")
+    fun getActionCount(bluetoothMac: String): Int
+
 }

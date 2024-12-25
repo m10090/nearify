@@ -27,11 +27,13 @@ import com.example.nearify.ui.view.composables.PermissionDialog
 import com.example.nearify.ui.view.composables.pushNotifyTextProvider
 
 class Perms : ComponentActivity() {
-    private val permissionsToRequest = arrayOf(
-        Manifest.permission.BLUETOOTH_ADVERTISE,
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.POST_NOTIFICATIONS
-    )
+    companion object {
+        val permissionsToRequest = arrayOf(
+            Manifest.permission.BLUETOOTH_ADVERTISE,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.POST_NOTIFICATIONS
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

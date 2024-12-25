@@ -12,11 +12,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.nearify.MainActivity
-import com.example.nearify.NotificationsFragment
 import com.example.nearify.data.model.Device
 import com.example.nearify.db
-import com.example.nearify.ui. view.pairDeviceByMacAddress
+import com.example.nearify.ui.view.pairDeviceByMacAddress
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

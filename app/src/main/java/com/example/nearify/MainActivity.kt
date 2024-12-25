@@ -33,6 +33,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 val db: AppDatabase by lazy(LazyThreadSafetyMode.NONE) {
@@ -45,8 +46,8 @@ private var _db_intial: AppDatabase? = null
 class MainActivity : AppCompatActivity() {
 
 
-
     private lateinit var fragmentManager: FragmentManager
+
     companion object {
         lateinit var binding: ActivityMainBinding
     }
@@ -73,7 +74,6 @@ class MainActivity : AppCompatActivity() {
         // Set up the bottom navigation
 
 
-
         fragmentManager = supportFragmentManager
         openFragment(NearifyList())
         val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
@@ -93,24 +93,35 @@ class MainActivity : AppCompatActivity() {
                 db.deviceDao().insert(Device("AA:BB:CC:DD:EE:FF", "Cgmoreda"))
             }
             if (db.actionDao().getAllActions.isEmpty()) {
-                db.actionDao().addAction(Action(macAddress = "AA:BB:CC:DD:EE:FF", onLeave =  true, onSight =  true, message = "Hello"))
+                db.actionDao().addAction(
+                    Action(
+                        macAddress = "AA:BB:CC:DD:EE:FF",
+                        onLeave = true,
+                        onSight = true,
+                        message = "Hello"
+                    )
+                )
             }
 
-        }
 
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
+            withContext(Dispatchers.Main) {
+
+                binding.bottomNavigation.setOnItemSelectedListener { item ->
+                    when (item.itemId) {
 
 //                R.id.saved_devices_btn -> openFragment(SavedDevicesFragment())
-                R.id.add_device_btn -> openFragment(AddDeviceList())
-                R.id.noti_btn -> openFragment(NearifyList())
-                R.id.saved_devices_btn -> openFragment(SavedDeviceList())
-                R.id.info_btn -> openFragment(InfoFragment())
-            }
-            true
-        }
+                        R.id.add_device_btn -> openFragment(AddDeviceList())
+                        R.id.noti_btn -> openFragment(NearifyList())
+                        R.id.saved_devices_btn -> openFragment(SavedDeviceList())
+                        R.id.info_btn -> openFragment(InfoFragment())
+                    }
+                    true
+                }
 
+            }
+        }
     }
+
     private var serviceIntent: Intent? = null
     private fun scheduleJob() {
         // Get the JobScheduler system service
@@ -127,7 +138,7 @@ class MainActivity : AppCompatActivity() {
         super.onBackPressedDispatcher.onBackPressed()
     }
 
-     fun openFragment(fragment: Fragment) {
+    fun openFragment(fragment: Fragment) {
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container, fragment)
         fragmentTransaction.commit()

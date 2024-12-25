@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -21,6 +23,9 @@ import com.example.nearify.data.model.Device
 import com.example.nearify.databinding.ActivityMainBinding
 import com.example.nearify.ui.view.ActionNotification
 import com.example.nearify.ui.view.AddDeviceList
+
+import com.example.nearify.ui.view.AddDevuceFragment
+import com.example.nearify.ui.view.InfoFragment
 
 import com.example.nearify.ui.view.NearifyList
 import com.example.nearify.ui.view.SavedDeviceList
@@ -40,6 +45,8 @@ var _db_intial: AppDatabase? = null
 
 class MainActivity : AppCompatActivity() {
 
+
+
     private lateinit var fragmentManager: FragmentManager
     companion object {
         lateinit var binding: ActivityMainBinding
@@ -47,6 +54,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -66,10 +74,12 @@ class MainActivity : AppCompatActivity() {
         // Set up the bottom navigation
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
+
 //                R.id.saved_devices_btn -> openFragment(SavedDevicesFragment())
                 R.id.add_device_btn -> openFragment(AddDeviceList())
                 R.id.noti_btn -> openFragment(NearifyList())
                 R.id.saved_devices_btn -> openFragment(SavedDeviceList())
+                R.id.info_btn -> openFragment(InfoFragment())
             }
             true
         }

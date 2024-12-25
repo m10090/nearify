@@ -64,6 +64,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("com.google.android.flexbox:flexbox:3.0.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.room:room-runtime:2.6.1")

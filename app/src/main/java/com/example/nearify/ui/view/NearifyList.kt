@@ -27,8 +27,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-lateinit var devices: List<Device>
-lateinit var actionsCnt: List<Int>
+private lateinit var devices: List<Device>
+private lateinit var actionsCnt: List<Int>
 class NearifyList : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

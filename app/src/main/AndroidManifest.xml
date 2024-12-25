@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -11,8 +10,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <uses-feature
         android:name="android.hardware.bluetooth_le"
         android:required="true" />
@@ -27,14 +26,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MySplashScreen"
         tools:targetApi="31">
-
-        <activity android:name=".Perms"
+        <activity
+            android:name=".ui.view.ActionList"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat" />
+        <activity
+            android:name=".Perms"
             android:exported="true" />
-
         <activity
             android:name=".ui.view.AddNotification"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat"/>
+            android:theme="@style/Theme.AppCompat" />
         <activity
             android:name=".ui.view.AddDevice"
             android:exported="true"
@@ -45,8 +47,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -62,12 +62,11 @@
             android:name=".ui.view.SavedDevicesActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat" />
+
         <service
             android:name=".NearifyService"
             android:foregroundServiceType="location"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
-
     </application>
 
 </manifest>

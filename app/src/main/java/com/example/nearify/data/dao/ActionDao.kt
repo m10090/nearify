@@ -37,10 +37,10 @@ interface ActionDao {
     @Query(
         """
         DELETE FROM `action`
-        where device_id = :deviceId
+        where action_id = :action_id
     """
     )
-    fun deleteActions(deviceId: String)
+    fun deleteAction(action_id: Int)
 
 
 

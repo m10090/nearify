@@ -25,6 +25,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+private lateinit var devices: List<Device>
 class SavedDeviceList : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

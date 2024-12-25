@@ -1,5 +1,6 @@
 package com.example.nearify.ui.view.composables
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,15 +18,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.nearify.data.model.Device
 import com.example.nearify.ui.theme.purpleGradient
+import com.example.nearify.ui.view.ActionList
 
 @Composable
 fun NearifyDeviceCard(cardData: Device, notificationCount: Int) {
 
+    val context = LocalContext.current
     val buttonColor = Color(0xFFCF71F1)
 
     // Define a fixed size for the square card
@@ -65,7 +69,11 @@ fun NearifyDeviceCard(cardData: Device, notificationCount: Int) {
                 horizontalArrangement = Arrangement.Center
             ) {
                 Button(
-                    onClick = { /* Handle nearifies action */ },
+                    onClick = {
+                        val intent = Intent(context, ActionList::class.java)
+                        intent.putExtra("macAddress", cardData.bluetoothMac)
+                        context.startActivity(intent)
+                    },
                     modifier = Modifier.width(110.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = buttonColor,

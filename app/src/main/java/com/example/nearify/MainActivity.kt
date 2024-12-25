@@ -35,12 +35,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
-val db: AppDatabase by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+val db: AppDatabase by lazy(LazyThreadSafetyMode.NONE) {
     _db_intial!!
 }
 
 
-var _db_intial: AppDatabase? = null
+private var _db_intial: AppDatabase? = null
 
 class MainActivity : AppCompatActivity() {
 
@@ -71,24 +71,14 @@ class MainActivity : AppCompatActivity() {
         // Set up the toolbar
 
         // Set up the bottom navigation
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
 
-//                R.id.saved_devices_btn -> openFragment(SavedDevicesFragment())
-                R.id.add_device_btn -> openFragment(AddDeviceList())
-                R.id.noti_btn -> openFragment(NearifyList())
-                R.id.saved_devices_btn -> openFragment(SavedDeviceList())
-                R.id.info_btn -> openFragment(InfoFragment())
-            }
-            true
-        }
 
 
         fragmentManager = supportFragmentManager
         openFragment(NearifyList())
         val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
         startActivity(enableBtIntent)
-        // scheduleJob()
+        scheduleJob()
         GlobalScope.launch(Dispatchers.IO) {
 
             if (_db_intial != null) {
@@ -106,6 +96,18 @@ class MainActivity : AppCompatActivity() {
                 db.actionDao().addAction(Action(macAddress = "AA:BB:CC:DD:EE:FF", onLeave =  true, onSight =  true, message = "Hello"))
             }
 
+        }
+
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+
+//                R.id.saved_devices_btn -> openFragment(SavedDevicesFragment())
+                R.id.add_device_btn -> openFragment(AddDeviceList())
+                R.id.noti_btn -> openFragment(NearifyList())
+                R.id.saved_devices_btn -> openFragment(SavedDeviceList())
+                R.id.info_btn -> openFragment(InfoFragment())
+            }
+            true
         }
 
     }

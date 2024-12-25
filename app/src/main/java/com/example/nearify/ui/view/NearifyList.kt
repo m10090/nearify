@@ -44,6 +44,12 @@ class NearifyList : Fragment() {
                 val device = it
                 db.actionDao().getActionCount(device.bluetoothMac)
             }
+            devices = devices.filterIndexed { index, it ->
+                actionsCnt[index] > 0
+            }
+            actionsCnt = actionsCnt.filter {
+                it > 0
+            }
 
             withContext(Dispatchers.Main) {
                 val container =  root.findViewById<LinearLayout>(R.id.compose_container)

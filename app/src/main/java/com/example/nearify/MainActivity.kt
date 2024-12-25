@@ -36,9 +36,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-val db: AppDatabase by lazy(LazyThreadSafetyMode.NONE) {
-    _db_intial!!
-}
+lateinit var db: AppDatabase
 
 
 private var _db_intial: AppDatabase? = null
@@ -75,10 +73,8 @@ class MainActivity : AppCompatActivity() {
 
 
         fragmentManager = supportFragmentManager
-        openFragment(NearifyList())
         val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
         startActivity(enableBtIntent)
-        scheduleJob()
         GlobalScope.launch(Dispatchers.IO) {
 
             if (_db_intial != null) {
@@ -88,23 +84,14 @@ class MainActivity : AppCompatActivity() {
             _db_intial =
                 Room.databaseBuilder(applicationContext, AppDatabase::class.java, "nearify-db")
                     .build()
+            db = _db_intial!!
 
-            if (db.deviceDao().getAllDevices.isEmpty()) {
-                db.deviceDao().insert(Device("AA:BB:CC:DD:EE:FF", "Cgmoreda"))
-            }
-            if (db.actionDao().getAllActions.isEmpty()) {
-                db.actionDao().addAction(
-                    Action(
-                        macAddress = "AA:BB:CC:DD:EE:FF",
-                        onLeave = true,
-                        onSight = true,
-                        message = "Hello"
-                    )
-                )
-            }
+
 
 
             withContext(Dispatchers.Main) {
+                scheduleJob()
+                openFragment(NearifyList())
 
                 binding.bottomNavigation.setOnItemSelectedListener { item ->
                     when (item.itemId) {

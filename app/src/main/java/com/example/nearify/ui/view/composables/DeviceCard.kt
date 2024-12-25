@@ -93,8 +93,11 @@ fun DeviceCard(device: Device) {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Button(
+
                         onClick = {
+                            val device = Device(device.bluetoothMac,deviceName)
                             pairDeviceByMacAddress(device.bluetoothMac, context)
+
                             GlobalScope.launch(Dispatchers.IO) {
                                 db.deviceDao().insert(device)
                             }

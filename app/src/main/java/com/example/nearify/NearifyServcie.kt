@@ -11,6 +11,8 @@ import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.example.nearify.data.model.Action
+import com.example.nearify.data.model.Device
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Runnable
@@ -48,6 +50,7 @@ class NearifyService : Service() {
 
     private val runnable: Runnable = object : Runnable {
 
+        @SuppressLint("MissingPermission")
         override fun run() {
             val channelId = "notification_channel"
             val notificationManager =
@@ -100,32 +103,34 @@ class NearifyService : Service() {
                         bluetoothSocket.close() // Close the socket when done
                     } catch (e: IOException) {
                         e.printStackTrace()
+                    }catch (_: Exception) {
+                        Log.i("NearifyWorker", "error connecting to device")
                     }
                 }
                 val newOutOfRange = devices.map { it.bluetoothMac }.toSet() - newInRange
                 val oldInRange = db.deviceDao().getInRangeDevices.map { it.device.bluetoothMac }
                 val oldOutOfRange =
                     db.deviceDao().getOutOfRangeDevices.map { it.device.bluetoothMac }
-                val notifications = mutableListOf<String>()
+                val notifications = mutableListOf<Action>()
                 oldInRange.forEach { device ->
                     if (newOutOfRange.contains(device)) {
                         db.deviceDao().updateDevice(device, false)
                         notifications.addAll(
-                            db.actionDao().getLeaveActions(device).map { it.message })
+                            db.actionDao().getLeaveActions(device))
                     }
                 }
                 oldOutOfRange.forEach { device ->
                     if (newInRange.contains(device)) {
                         db.deviceDao().updateDevice(device, true)
                         notifications.addAll(
-                            db.actionDao().getEnterActions(device).map { it.message })
+                            db.actionDao().getEnterActions(device))
                     }
                 }
 
 
-                notifications.forEachIndexed { index, message ->
-                    val notification = notificationBuilder.setContentText(message).build()
-                    val notificationId = index + 1
+                notifications.forEach {  action ->
+                    val notification = notificationBuilder.setContentText(action.message).build()
+                    val notificationId = action.actionId + 1
                     Log.i("NotifService","sending notfication")
                     withContext(Dispatchers.Main) {
                         notificationManager.notify(notificationId, notification)

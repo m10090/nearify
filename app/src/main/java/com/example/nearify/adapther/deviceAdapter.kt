@@ -13,7 +13,6 @@ import com.example.nearify.R
 import com.example.nearify.data.model.Device
 import com.example.nearify.data.model.savedDevice
 import com.example.nearify.ui.view.ActionNotification
-import com.example.nearify.ui.view.AddDevice
 import com.example.nearify.ui.view.AddNotification
 
 

@@ -1,10 +1,14 @@
 package com.example.nearify
 
+import android.app.Application
+import android.bluetooth.BluetoothAdapter
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -18,7 +22,9 @@ import com.example.nearify.databinding.ActivityMainBinding
 import com.example.nearify.ui.view.ActionNotification
 import com.example.nearify.ui.view.AddDeviceList
 
-import com.example.nearify.ui.view.AddDevuceFragment
+import com.example.nearify.ui.view.NearifyList
+import com.example.nearify.ui.view.SavedDeviceList
+import com.example.nearify.ui.view.composables.SavedDeviceCard
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -44,34 +50,42 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//
-//        val intent = Intent(this, Perms::class.java)
-//        startActivity(intent)
+
+        if (!(Perms.permissionsToRequest.all { permission ->
+                ContextCompat.checkSelfPermission(
+                    this,
+                    permission
+                ) == PackageManager.PERMISSION_GRANTED
+            })) {
+            val intent = Intent(this, Perms::class.java)
+            startActivity(intent)
+            return
+        }
         // Set up the toolbar
 
         // Set up the bottom navigation
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.saved_devices_btn -> openFragment(SavedDevicesFragment())
-                R.id.add_device_btn -> openFragment(ActionNotification())
-                R.id.noti_btn -> openFragment(NotificationsFragment())
+//                R.id.saved_devices_btn -> openFragment(SavedDevicesFragment())
+                R.id.add_device_btn -> openFragment(AddDeviceList())
+                R.id.noti_btn -> openFragment(NearifyList())
+                R.id.saved_devices_btn -> openFragment(SavedDeviceList())
             }
             true
         }
-        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
-            openFragment(AddDeviceList())
-        }
+
 
         fragmentManager = supportFragmentManager
-        openFragment(NotificationsFragment())
-
-
+        openFragment(NearifyList())
+        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+        startActivity(enableBtIntent)
+        // scheduleJob()
         GlobalScope.launch(Dispatchers.IO) {
 
             if (_db_intial != null) {
                 return@launch
             }
-//            scheduleJob()
+
             _db_intial =
                 Room.databaseBuilder(applicationContext, AppDatabase::class.java, "nearify-db")
                     .build()

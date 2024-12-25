@@ -1,6 +1,7 @@
 package com.example.nearify.ui.view.composables
 
 import android.app.AlertDialog
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.example.nearify.data.model.Device
 import com.example.nearify.db
 import com.example.nearify.ui.theme.purpleGradient
+import com.example.nearify.ui.view.AddNotification
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -73,7 +75,11 @@ fun SavedDeviceCard(device: Device) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(
-                    onClick = { /* Handle add action */ },
+                    onClick = {
+                        val intent = Intent(context, AddNotification::class.java)
+                        intent.putExtra("device", device)
+                        context.startActivity(intent)
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = buttonColor,
                         contentColor = Color.White

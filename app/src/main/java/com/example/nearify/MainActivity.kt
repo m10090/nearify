@@ -24,7 +24,6 @@ import com.example.nearify.databinding.ActivityMainBinding
 import com.example.nearify.ui.view.ActionNotification
 import com.example.nearify.ui.view.AddDeviceList
 
-import com.example.nearify.ui.view.AddDevuceFragment
 import com.example.nearify.ui.view.InfoFragment
 
 import com.example.nearify.ui.view.NearifyList

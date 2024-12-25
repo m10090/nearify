@@ -33,7 +33,8 @@
 
         <activity
             android:name=".ui.view.AddNotification"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat"/>
         <activity
             android:name=".ui.view.AddDevice"
             android:exported="true"
@@ -44,14 +45,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.view.AddDeviceList"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat" />
-        <activity
-            android:name=".ui.view.ActionNotification"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat" />
+
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
